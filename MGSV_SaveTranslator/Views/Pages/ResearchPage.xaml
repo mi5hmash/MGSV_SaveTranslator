@@ -120,7 +120,7 @@
                     FontSize="18"
                     Icon="DesktopPulse28"
                     IsEnabled="{Binding ViewModel.IsBruteforceEnabled}"
-                    ToolTip="Guess for PC version" />
+                    ToolTip="Try to generate a valid key" />
                 <ui:Button
                     Grid.Column="4"
                     Command="{Binding ViewModel.BruteforceKeyCommand}"
@@ -157,12 +157,12 @@
                 <ProgressBar
                     Grid.Column="0"
                     IsIndeterminate="False"
-                    Value="{Binding ViewModel.ProgressModel.Numeric, UpdateSourceTrigger=PropertyChanged}" />
+                    Value="{Binding ViewModel.ProgressService.Numeric, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" />
                 <TextBlock
                     Grid.Column="2"
                     VerticalAlignment="Center"
                     FontSize="12"
-                    Text="{Binding ViewModel.ProgressModel.Text, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding ViewModel.ProgressService.Text, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </StackPanel>
 

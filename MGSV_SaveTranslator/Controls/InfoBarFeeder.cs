@@ -5,11 +5,11 @@ namespace MGSV_SaveTranslator.Controls;
 
 public class InfoBarFeeder
 {
-    public string Title { get; private set; }
+    public string Title { get; private set; } = "";
 
     public bool IsOpen { get; private set; }
 
-    public string Message { get; private set; }
+    public string Message { get; private set; } = "";
 
     public InfoBarSeverity Severity { get; private set; }
 

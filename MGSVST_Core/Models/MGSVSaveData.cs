@@ -1,6 +1,7 @@
 ﻿using MGSVST_Core.Helpers;
 using System.Security.Cryptography;
 using System.Text;
+using MGSVST_Core.Interfaces;
 
 namespace MGSVST_Core.Models;
 
@@ -30,7 +31,7 @@ public class MGSVSaveData
     /// <summary>
     /// A FilePath of a currently loaded file.
     /// </summary>
-    public string FilePath { get; private set; }
+    public string FilePath { get; private set; } = "";
 
     /// <summary>
     /// A flag which determines if current <see cref="Data"/> is encrypted.
@@ -73,7 +74,7 @@ public class MGSVSaveData
         {
             if (backupEnabled)
             {
-                var suffix = IsEncrypted ? "encr" : "decr";
+                var suffix = IsEncrypted ? "decr" : "encr"; // its reversed, because backup of a file will be the opposite of the new file
                 File.Copy(FilePath, $"{FilePath}.bak{suffix}");
             }
             File.WriteAllBytes(FilePath,Data);
@@ -88,41 +89,48 @@ public class MGSVSaveData
     }
 
     /// <summary>
-    /// Specifies whether the SaveData is encrypted.
+    /// Specifies whether the SaveData is encrypted or not, based on file header and checksum.
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    private static bool IsDataEncrypted(IEnumerable<byte> data) 
-        => BitConverter.ToUInt32(data.Skip(16).Take(4).ToArray()) is not (1396921939 or 1380013651);
-    private static bool IsDataEncrypted(uint data)
-        => data is not (1396921939 or 1380013651);
+    private static bool IsDataEncrypted(byte[] data)
+        => IsDataEncryptedLite(data.Skip(16).Take(4).ToArray()) && !ValidateDataMd5(data);
+
+    /// <summary>
+    /// A lighter version of <see cref="IsDataEncrypted"/>. Validates only the file header.
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    private static bool IsDataEncryptedLite(byte[] data) 
+        => BitConverter.ToUInt32(data) is not (1396921939 or 1380013651 or 1769437799); // checks for mgsvtpp ('SVCS' or 'SVAR') and for mgsvgz ('gzwi')
+
 
     /// <summary>
     /// Tries out all possible keys (4,294,967,295) for content in the <see cref="Data"/>.
     /// </summary>
     /// <param name="cancellationToken"></param>
-    /// <param name="progressModel"></param>
+    /// <param name="progressService"></param>
     /// <returns></returns>
-    public bool BruteforceKey(CancellationToken cancellationToken, ProgressModel progressModel)
+    public bool BruteforceKey(CancellationToken cancellationToken, IProgressService progressService)
     {
         var result = false;
-
+        uint progress = 0;
+        
         ParallelOptions po = new()
         {
             CancellationToken = cancellationToken,
             MaxDegreeOfParallelism = Environment.ProcessorCount - 1
         };
 
-        uint progress = 0;
         Parallel.For(1, uint.MaxValue, po, (ctr, state) =>
         {
             Interlocked.Increment(ref progress);
-            progressModel.TasksDone = progress;
+            progressService.TasksDone = progress;
             var i = Convert.ToUInt32(ctr);
             if (!DecryptLite(i)) return;
-            if (!Deencrypt(i)) return;
-            Key = i;
+            if (!Deencrypt(i, true)) return;
             result = true;
+            Key = i;
             state.Break();
         });
 
@@ -180,7 +188,6 @@ public class MGSVSaveData
     /// <summary>
     /// Compares the checksum of the file with the checksum stored in the file.
     /// </summary>
-    /// <param name="bytes"></param>
     /// <returns></returns>
     private void SignDataMd5()
     {
@@ -201,7 +208,6 @@ public class MGSVSaveData
         var key = (uint)( checksum[0] | checksum[1] << 8 | checksum[2] << 16 | checksum[3] << 24);
         
         // test key
-        var bytes = Data;
         var result = Deencrypt(key);
         Key = key;
         if (result)
@@ -229,10 +235,10 @@ public class MGSVSaveData
         for (int i = 0; i < bytes.Length; i += 4)
         {
             // take 4 bytes
-            byte[] batch = bytes.Skip(i).Take(4).ToArray();
+            var batch = bytes.Skip(i).Take(4).ToArray();
 
             // convert batch array to UInt32
-            uint batchUInt32 = BitConverter.ToUInt32(batch);
+            var batchUInt32 = BitConverter.ToUInt32(batch);
 
             // transform
             var hash = key;
@@ -274,7 +280,7 @@ public class MGSVSaveData
         for (int i = 0; i < 20; i += 4)
         {
             // take 4 bytes
-            byte[] batch = bytes.Skip(i).Take(4).ToArray();
+            var batch = bytes.Skip(i).Take(4).ToArray();
 
             // convert batch array to UInt32
             batchUInt32 = BitConverter.ToUInt32(batch);
@@ -291,7 +297,7 @@ public class MGSVSaveData
             key ^= hash;
             batchUInt32 ^= key;
         }
-        return !IsDataEncrypted(batchUInt32);
+        return !IsDataEncryptedLite(BitConverter.GetBytes(batchUInt32));
     }
 
     /// <summary>

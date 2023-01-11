@@ -7,12 +7,15 @@
 
 <img src="https://github.com/mi5hmash/MGSV_SaveTranslator/blob/main/.resources/images/Logo.png" alt="Logo"/>
 
-This app can **decrypt and encrypt SaveData files** from the **Metal Gear Solid V: The Phantom Pain** game.
+This app can **decrypt and encrypt SaveData files** from the **Metal Gear Solid V: The Phantom Pain** & **Ground Zeroes** games.
 It is useful during **changing the region of the SaveData or porting it to another gaming platform.**
 
 | Game Title | Tested Version |
 |------------|----------------|
 | MGSV:TPP   | 1.0.15.3       |
+| MGSV:GZ*    | 1.0.0.5        |
+
+\* No cross-platform compatibility.
 
 | Supported formats      |
 |------------------------|

@@ -25,8 +25,6 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
     [ObservableProperty] private string _saveFilePath = AppInfo.RootPath;
     // InfoBarFeeder
     [ObservableProperty] private InfoBarFeeder _infoBarFeeder = new();
-    // Progress
-    [ObservableProperty] private ProgressModel _progressModel = new();
     // Fields
     [ObservableProperty] private string _profileName = "";
     [ObservableProperty] private int _selectedProfileName;
@@ -41,17 +39,20 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
     private CancellationTokenSource _cts = new();
 
     // Dependencies
+    [ObservableProperty] private ProgressService _progressService;
     private MGSVProfilesService _mgsvProfilesService;
 
     /// <summary>
     /// Constructor with dependency injection
     /// </summary>
     /// <param name="mgsvProfilesService"></param>
-    public ResearchViewModel(MGSVProfilesService mgsvProfilesService)
+    /// <param name="progressService"></param>
+    public ResearchViewModel(MGSVProfilesService mgsvProfilesService, ProgressService progressService, MainWindowViewModel mainWindowViewModel)
     {
         _mgsvProfilesService = mgsvProfilesService;
+        _progressService = progressService;
     }
-
+    
     public void OnNavigatedTo()
     {
         if (_visited) return;
@@ -112,7 +113,7 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
             Task.Run(async () => {
                 while (!_cts.Token.IsCancellationRequested)
                 {
-                    OnPropertyChanged(nameof(ProgressModel));
+                    OnPropertyChanged(nameof(ProgressService));
                     await Task.Delay(TimeSpan.FromSeconds(1), _cts.Token);
                 }
             }, _cts.Token);
@@ -121,13 +122,13 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
         {
         }
 
-        _progressModel.TasksTotal = uint.MaxValue;
+        ProgressService.TasksTotal = uint.MaxValue;
         try
         {
-            await Task.Run(() => mgsvst.BruteforceKey(_cts.Token, _progressModel));
+            await Task.Run(() => mgsvst.BruteforceKey(_cts.Token, ProgressService));
             Key = mgsvst.Key;
-            ProgressModel.Numeric = 100;
-            OnPropertyChanged(nameof(ProgressModel));
+            ProgressService.Complete();
+            OnPropertyChanged(nameof(ProgressService));
             InfoBarFeederConsume(mgsvst.Reporter);
         }
         catch (OperationCanceledException)
@@ -135,8 +136,8 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
             mgsvst.Reporter.Information("Operation has been cancelled.");
             InfoBarFeederConsume(mgsvst.Reporter);
             Key = 0;
-            ProgressModel.Numeric = 0;
-            OnPropertyChanged(nameof(ProgressModel));
+            ProgressService.Reset();
+            OnPropertyChanged(nameof(ProgressService));
             BruteforceButtonVisibility = Visibility.Visible;
             BruteforceAbortButtonVisibility = Visibility.Collapsed;
             return;

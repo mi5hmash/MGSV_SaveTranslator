@@ -6,12 +6,10 @@ using MGSV_SaveTranslator.Services;
 using MGSVST_Core.Helpers;
 using MGSVST_Core.Models;
 using Microsoft.Win32;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Animation;
 using Wpf.Ui.Common.Interfaces;
 
 namespace MGSV_SaveTranslator.ViewModels;

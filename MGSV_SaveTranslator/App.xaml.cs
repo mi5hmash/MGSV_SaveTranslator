@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using MGSV_SaveTranslator.Models;
 using MGSV_SaveTranslator.Services;
 using Microsoft.Extensions.Configuration;
@@ -62,6 +61,7 @@ namespace MGSV_SaveTranslator
 
                 // Other Services
                 services.AddSingleton<MGSVProfilesService>();
+                services.AddSingleton<ProgressService>();
 
                 // Configuration
                 services.Configure<AppSettings>(context.Configuration.GetSection(nameof(AppSettings)));
