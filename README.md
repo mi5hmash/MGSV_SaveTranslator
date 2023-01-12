@@ -25,12 +25,12 @@ It is useful during **changing the region of the SaveData or porting it to anoth
 *\* SaveData files on consoles are additionally packed with a method specific to a given console. **This tool doesn't support any of these methods.***
 
 # 🤯 Why was it created :interrobang:
-I just wanted to continue playing on SteamDeck from where I left off on PS4 console.
+I just wanted to continue playing on SteamDeck from where I left off on the PS4 console.
 
 # :scream: Is it safe?
 **No.** You can corrupt your SaveData files and lose your progress or get banned from playing online if you unreasonably modify your file.
 
-**Remember to** always make a backup of the files you are about to modify.
+**Remember to always make a backup of the files you are about to modify.**
 
 With that being said, let's continue to the next chapter where you will learn about the features of this tool.
 
@@ -50,7 +50,7 @@ Let's assume you want to translate SaveData files from PS4 to PC and you have a 
 * **TPP_GAME_DATA0**
 * **TPP_GAME_DATA1**
 
-You have to fill in the TextBox **(1)** by dragging and dropping the file on it, pasting the path to that file, or selecting the file using the FilePicker by clicking on the button **(2)**.
+First, you have to fill in the TextBox **(1)** by dragging and dropping the file on it, pasting the path to that file, or selecting the file using the FilePicker by clicking on the button **(2)**.
 
 Once done, you can click the **(3)** button to analyze the file and automatically detect which of the already defined profiles **(4)** should match that case. If the file is already decrypted it should work with any profile.
 It is possible that a suitable profile would not get found. In that case, you could try to use the Research Page to find the decryption key, but more on that later. If everything went well, button **(5)** will be unlocked. Now all that's left to do is click on the unlocked button, change the profile to ***"[PC] <name_of_the_file_you're_working_on>"***, and click the button again to encrypt the file.
@@ -61,7 +61,7 @@ Button **(7)** does exactly what its name says.
 
 <img src="https://github.com/mi5hmash/MGSV_SaveTranslator/blob/main/.resources/images/ResearchPage.png" alt="ResearchPage"/>
 
-Let's assume the decrypted PS4 SaveData files come from an encrypted archive called ***"MGSVTPPSaveDataJP"***. There is no such profile out of the box, so you have to find a decryption key that will unlock all the files inside it.
+Now, let's assume the decrypted PS4 SaveData files come from an encrypted archive called ***"MGSVTPPSaveDataJP"***. There is no such profile out of the box, so you have to find a decryption key that will unlock all the files inside it.
 
 First, in the Research tab, fill in the TextBox **(1)** by dragging and dropping the file on it, pasting the path to that file, or selecting the file using the FilePicker by clicking on the button **(2)**.
 
