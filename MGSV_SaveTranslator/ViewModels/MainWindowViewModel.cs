@@ -24,14 +24,14 @@ public partial class MainWindowViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<MenuItem> _trayMenuItems = new();
 
-    public MainWindowViewModel(INavigationService navigationService)
+    public MainWindowViewModel()
     {
         if (!_isInitialized) InitializeViewModel();
     }
 
     private void InitializeViewModel()
     {
-        ApplicationTitle = AppInfo.Name;
+        ApplicationTitle = AppInfo.Title;
 
         NavigationItems = new ObservableCollection<INavigationControl>
         {

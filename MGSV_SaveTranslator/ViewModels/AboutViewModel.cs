@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using MGSV_SaveTranslator.Helpers;
 using Wpf.Ui.Common.Interfaces;
 
 namespace MGSV_SaveTranslator.ViewModels;
@@ -9,6 +10,9 @@ public partial class AboutViewModel : ObservableObject, INavigationAware
 
     [ObservableProperty]
     private string _appVersion = string.Empty;
+
+    [ObservableProperty]
+    private string _appAuthor = string.Empty;
 
     public void OnNavigatedTo()
     {
@@ -22,13 +26,8 @@ public partial class AboutViewModel : ObservableObject, INavigationAware
 
     private void InitializeViewModel()
     {
-        AppVersion = $"{GetAssemblyVersion()}";
+        AppVersion = AppInfo.Version;
+        AppAuthor = AppInfo.Author;
         _isInitialized = true;
     }
-
-    /// <summary>
-    /// Gets application version.
-    /// </summary>
-    /// <returns></returns>
-    private static string GetAssemblyVersion() => System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
 }

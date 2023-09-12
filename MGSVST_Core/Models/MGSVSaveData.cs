@@ -277,7 +277,7 @@ public class MGSVSaveData
     {
         var bytes = Data;
         uint batchUInt32 = 0;
-        for (int i = 0; i < 20; i += 4)
+        for (var i = 0; i < 20; i += 4)
         {
             // take 4 bytes
             var batch = bytes.Skip(i).Take(4).ToArray();

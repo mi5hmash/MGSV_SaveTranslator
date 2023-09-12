@@ -38,7 +38,7 @@ public partial class TranslatorViewModel : ObservableObject, INavigationAware
 
     [ObservableProperty] private MGSVSaveData _mgsvSaveData = new();
 
-    private MGSVProfilesService _mgsvProfilesService;
+    private readonly MGSVProfilesService _mgsvProfilesService;
 
     public TranslatorViewModel(MGSVProfilesService mgsvProfilesService)
     {
@@ -69,8 +69,8 @@ public partial class TranslatorViewModel : ObservableObject, INavigationAware
     [RelayCommand]
     private void LoadFile()
     {
-        _mgsvSaveData.Load(_saveFilePath);
-        InfoBarFeederConsume(_mgsvSaveData.Reporter);
+        MgsvSaveData.Load(SaveFilePath);
+        InfoBarFeederConsume(MgsvSaveData.Reporter);
     }
 
     [RelayCommand] private void OpenShortcut1() => IoHelpers.OpenDirectory(Directory.GetParent(SaveFilePath)!.FullName);
@@ -78,7 +78,7 @@ public partial class TranslatorViewModel : ObservableObject, INavigationAware
     partial void OnSaveFilePathChanged(string value)
     {
         var result = File.Exists(value);
-        if (result) _mgsvSaveData.Load(value);
+        if (result) MgsvSaveData.Load(value);
         IsAnalyzeEnabled = result;
         PokeDecryptButtonState();
     }
@@ -91,64 +91,64 @@ public partial class TranslatorViewModel : ObservableObject, INavigationAware
     [RelayCommand]
     private void Analyze()
     {
-        if (!_mgsvSaveData.IsEncrypted)
+        if (!MgsvSaveData.IsEncrypted)
         {
-            _mgsvSaveData.Reporter.Information("The file is decrypted so it can be encrypted with any profile.");
-            InfoBarFeederConsume(_mgsvSaveData.Reporter);
+            MgsvSaveData.Reporter.Information("The file is decrypted so it can be encrypted with any profile.");
+            InfoBarFeederConsume(MgsvSaveData.Reporter);
             return;
         }
         var keyCandidates = _mgsvProfilesService.GameProfilesJson.Profiles.Select(x => x.Key);
         // test out all key candidates
-        var result = _mgsvSaveData.Load(SaveFilePath);
+        var result = MgsvSaveData.Load(SaveFilePath);
         if (!result)
         {
-            InfoBarFeederConsume(_mgsvSaveData.Reporter);
+            InfoBarFeederConsume(MgsvSaveData.Reporter);
             return;
         }
-        result = _mgsvSaveData.BruteforceKeyLite(keyCandidates.ToArray());
+        result = MgsvSaveData.BruteforceKeyLite(keyCandidates.ToArray());
         if (result) 
         {
-            var query = _mgsvProfilesService.GameProfilesJson.Profiles.Where(x => x.Key == _mgsvSaveData.Key);
+            var query = _mgsvProfilesService.GameProfilesJson.Profiles.Where(x => x.Key == MgsvSaveData.Key);
             var profileName = query.Select(x => x.Name).First();
             SelectedProfileName = ProfileNames.IndexOf(profileName);
-            _mgsvSaveData.Reporter.Success($"The appropriate profile for that file is '{ProfileName}'.");
+            MgsvSaveData.Reporter.Success($"The appropriate profile for that file is '{ProfileName}'.");
         }
         else
         {
-            _mgsvSaveData.Reporter.Error("Couldn't find matching Profile for that file.");
+            MgsvSaveData.Reporter.Error("Couldn't find matching Profile for that file.");
         }
-        InfoBarFeederConsume(_mgsvSaveData.Reporter);
+        InfoBarFeederConsume(MgsvSaveData.Reporter);
     }
 
     private void RepopulateCollections()
     {
         var rProfileName = ProfileName;
         var profileNames = _mgsvProfilesService.GameProfilesJson.Profiles.Select(x => x.Name);
-        _profileNames.Clear();
-        foreach (var item in profileNames) _profileNames.Add(item);
+        ProfileNames.Clear();
+        foreach (var item in profileNames) ProfileNames.Add(item);
         SelectedProfileName = ProfileNames.IndexOf(rProfileName);
     }
 
     [RelayCommand]
     private void Deencrypt()
     {
-        _mgsvSaveData.Key = _mgsvProfilesService.GameProfilesJson.Profiles.Where(x => x.Name == ProfileName).Select(x => x.Key).First();
-        if (_mgsvSaveData.IsEncrypted)
+        MgsvSaveData.Key = _mgsvProfilesService.GameProfilesJson.Profiles.Where(x => x.Name == ProfileName).Select(x => x.Key).First();
+        if (MgsvSaveData.IsEncrypted)
         {
-            _mgsvSaveData.Decrypt(IsMakeBackupChecked);
+            MgsvSaveData.Decrypt(IsMakeBackupChecked);
         }
         else
         {
-            _mgsvSaveData.Encrypt(IsMakeBackupChecked);
+            MgsvSaveData.Encrypt(IsMakeBackupChecked);
         }
         PokeDecryptButtonState();
-        InfoBarFeederConsume(_mgsvSaveData.Reporter);
+        InfoBarFeederConsume(MgsvSaveData.Reporter);
     }
 
     private void PokeDecryptButtonState()
     {
-        IsDeencryptEnabled = _isAnalyzeEnabled && SelectedProfileName > -1;
-        DeencryptButtonContent = _mgsvSaveData.IsEncrypted ? "DECRYPT" : "ENCRYPT";
+        IsDeencryptEnabled = IsAnalyzeEnabled && SelectedProfileName > -1;
+        DeencryptButtonContent = MgsvSaveData.IsEncrypted ? "DECRYPT" : "ENCRYPT";
     }
     
     private void InfoBarFeederReset()

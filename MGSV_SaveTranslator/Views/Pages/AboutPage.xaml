@@ -72,7 +72,7 @@
                         <TextBlock
                             FontSize="13"
                             FontWeight="Bold"
-                            Text="Mi5hmasH" />
+                            Text="{Binding ViewModel.AppAuthor, Mode=OneWay}" />
                     </StackPanel>
                 </StackPanel>
                 <StackPanel

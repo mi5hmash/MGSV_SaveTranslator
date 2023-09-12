@@ -40,14 +40,14 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
 
     // Dependencies
     [ObservableProperty] private ProgressService _progressService;
-    private MGSVProfilesService _mgsvProfilesService;
+    private readonly MGSVProfilesService _mgsvProfilesService;
 
     /// <summary>
     /// Constructor with dependency injection
     /// </summary>
     /// <param name="mgsvProfilesService"></param>
     /// <param name="progressService"></param>
-    public ResearchViewModel(MGSVProfilesService mgsvProfilesService, ProgressService progressService, MainWindowViewModel mainWindowViewModel)
+    public ResearchViewModel(MGSVProfilesService mgsvProfilesService, ProgressService progressService)
     {
         _mgsvProfilesService = mgsvProfilesService;
         _progressService = progressService;
@@ -79,11 +79,11 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
         InfoBarFeederConsume(_mgsvProfilesService.Reporter);
 
         MGSVSaveData mgsvst = new();
-        mgsvst.Load(_saveFilePath);
-        var ft = _profileName;
+        mgsvst.Load(SaveFilePath);
+        var ft = ProfileName;
         try
         {
-            ft = _profileName.Split("] ")[1];
+            ft = ProfileName.Split("] ")[1];
         }
         catch
         {
@@ -105,11 +105,11 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
 
         _cts = new CancellationTokenSource();
         MGSVSaveData mgsvst = new();
-        mgsvst.Load(_saveFilePath);
+        mgsvst.Load(SaveFilePath);
         
         try
         {
-            // progress bar update hack 
+            // progress bar update hack (DO NOT AWAIT OR IT WILL BREAK!)
             Task.Run(async () => {
                 while (!_cts.Token.IsCancellationRequested)
                 {
@@ -166,8 +166,8 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
     {
         var rProfileName = ProfileName;
         var profileNames = _mgsvProfilesService.GameProfilesJson.Profiles.Select(x => x.Name);
-        _profileNames.Clear();
-        foreach (var item in profileNames) _profileNames.Add(item);
+        ProfileNames.Clear();
+        foreach (var item in profileNames) ProfileNames.Add(item);
         SelectedProfileName = ProfileNames.IndexOf(rProfileName);
     }
 
@@ -185,12 +185,12 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
         MGSVProfile profile = new()
         {
             Name = ProfileName,
-            Key = _key
+            Key = Key
         };
         var result = _mgsvProfilesService.Add(profile);
         if (result)
         {
-            if (!_profileNames.Contains(profile.Name)) _profileNames.Add(profile.Name);
+            if (!ProfileNames.Contains(profile.Name)) ProfileNames.Add(profile.Name);
         }
         InfoBarFeederConsume(_mgsvProfilesService.Reporter);
     }
@@ -201,7 +201,7 @@ public partial class ResearchViewModel : ObservableObject, INavigationAware
         MGSVProfile profile = new()
         {
             Name = ProfileName,
-            Key = _key
+            Key = Key
         };
         _mgsvProfilesService.Remove(profile);
         InfoBarFeederConsume(_mgsvProfilesService.Reporter);
