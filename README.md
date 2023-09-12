@@ -1,5 +1,5 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](https://opensource.org/licenses/MIT)
 [![Release Version](https://img.shields.io/github/v/tag/mi5hmash/MGSV_SaveTranslator?label=version)](https://github.com/mi5hmash/MGSV_SaveTranslator/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](https://opensource.org/licenses/MIT)
 [![Visual Studio 2022](https://img.shields.io/badge/VS%202022-blueviolet?logo=visualstudio&logoColor=white)](https://visualstudio.microsoft.com/)
 [![dotNET7](https://img.shields.io/badge/.NET%207-blueviolet)](https://visualstudio.microsoft.com/)
 
@@ -13,7 +13,7 @@ It is useful during **changing the region of the SaveData or porting it to anoth
 | Game Title | Tested Version |
 |------------|----------------|
 | MGSV:TPP   | 1.0.15.3       |
-| MGSV:GZ*    | 1.0.0.5        |
+| MGSV:GZ*   | 1.0.0.5        |
 
 \* No cross-platform compatibility.
 
@@ -81,6 +81,6 @@ and
 
 # :fire: Issues
 All the problems I've encountered during my tests have been fixed on the go. If you find any other issue (hope you won't) then please, feel free to report it [there](https://github.com/mi5hmash/MGSV_SaveTranslator/issues).
-# :star: Sources:
+# :star: Sources
 * https://github.com/lepoco/wpfui
 * https://github.com/CommunityToolkit/dotnet
