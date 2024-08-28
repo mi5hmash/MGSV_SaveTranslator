@@ -1,7 +1,10 @@
-[![Release Version](https://img.shields.io/github/v/tag/mi5hmash/MGSV_SaveTranslator?label=version)](https://github.com/mi5hmash/MGSV_SaveTranslator/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blueviolet.svg)](https://opensource.org/licenses/MIT)
-[![Visual Studio 2022](https://img.shields.io/badge/VS%202022-blueviolet?logo=visualstudio&logoColor=white)](https://visualstudio.microsoft.com/)
-[![dotNET7](https://img.shields.io/badge/.NET%207-blueviolet)](https://visualstudio.microsoft.com/)
+[![Release Version](https://img.shields.io/github/v/tag/mi5hmash/MGSV_SaveTranslator?label=Version)](https://github.com/mi5hmash/MGSV_SaveTranslator/releases/latest)
+[![Visual Studio 2022](https://custom-icon-badges.demolab.com/badge/Visual%20Studio%202022-5C2D91.svg?&logo=visual-studio&logoColor=white)](https://visualstudio.microsoft.com/)
+[![.NET7](https://img.shields.io/badge/.NET%207-512BD4?logo=dotnet&logoColor=fff)](#)
+
+> [!IMPORTANT]
+> **This software is free and open source. If someone asks you to pay for it, it's likely a scam.**
 
 # :gear: MGSV_SaveTranslator - What is it :interrobang:
 
